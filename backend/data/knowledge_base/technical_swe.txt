@@ -1,0 +1,69 @@
+SOFTWARE ENGINEERING TECHNICAL INTERVIEW KNOWLEDGE BASE
+========================================================
+
+Data Structures:
+Arrays: contiguous memory, O(1) access, O(n) insert/delete.
+Linked Lists: O(1) insert at head, O(n) search. Use when frequent insertions at ends.
+Hash Maps: O(1) average lookup, insert, delete. Handle collisions via chaining or open addressing.
+Trees: Binary Search Tree O(log n) operations when balanced. AVL and Red-Black trees maintain balance automatically.
+Heaps: min-heap / max-heap. O(log n) insert and extract. Used for priority queues, Dijkstra's algorithm.
+Graphs: adjacency list vs adjacency matrix. BFS (queue), DFS (stack/recursion).
+Tries: prefix trees, efficient for string search and autocomplete, O(m) where m is key length.
+Stacks and Queues: LIFO and FIFO. Stacks for DFS, function call management. Queues for BFS, scheduling.
+
+Algorithm Complexity:
+Time Complexity: Big-O notation measures worst-case growth. Common: O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n).
+Space Complexity: measure auxiliary memory. Recursive algorithms often incur O(n) stack space.
+
+Sorting Algorithms:
+Merge Sort: O(n log n) stable, divide and conquer, O(n) extra space.
+Quick Sort: O(n log n) average, O(n^2) worst, in-place, preferred in practice.
+Heap Sort: O(n log n) always, in-place, not stable.
+Counting Sort / Radix Sort: O(n + k), linear but only for integer/bounded keys.
+
+Dynamic Programming:
+Break problem into overlapping subproblems. Store results (memoization or tabulation).
+Classic problems: Fibonacci, longest common subsequence, knapsack, coin change, edit distance.
+Identify: optimal substructure + overlapping subproblems.
+
+Object-Oriented Programming:
+Four pillars: Encapsulation, Inheritance, Polymorphism, Abstraction.
+SOLID principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
+Design Patterns: Singleton, Factory, Observer, Strategy, Decorator, Repository.
+
+API Design:
+RESTful APIs: stateless, resource-based URLs, standard HTTP verbs (GET, POST, PUT, DELETE, PATCH).
+Idempotency: GET, PUT, DELETE should be idempotent. POST is not.
+Status codes: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Server Error.
+Versioning: /v1/resource, accept headers, or query params.
+Pagination: cursor-based or offset-based. Cursor preferred for large data sets.
+
+Testing:
+Unit tests: test single functions in isolation, mock dependencies.
+Integration tests: test interaction between components.
+TDD: write test first, make it pass, refactor.
+Code coverage: aim for 80%+ on critical paths.
+
+Git Workflows:
+Feature branch workflow: create branch, implement, PR, review, merge.
+Conventional commits: feat:, fix:, chore:, refactor:, test:.
+Rebase vs merge: rebase for clean linear history, merge for preserving branch history.
+
+Concurrency:
+Threads vs Processes: threads share memory, processes isolated.
+Race conditions: use locks, mutexes, semaphores.
+Async/Await: non-blocking I/O, event loop model (Python asyncio, JavaScript Promises).
+Deadlock: circular dependency on resources. Prevention: lock ordering, timeouts.
+
+Evaluation Criteria for Technical Coding Answers:
+- Correctness of the solution
+- Time and space complexity awareness
+- Edge case handling
+- Code clarity and naming
+- Testing mindset
+
+Score 9-10: Optimal solution, explains complexity, handles edge cases, clean code
+Score 7-8: Correct solution, reasonable complexity, minor gaps
+Score 5-6: Working solution but suboptimal, misses some edge cases
+Score 3-4: Partially correct, significant flaws in logic or complexity
+Score 1-2: Incorrect or unable to approach the problem

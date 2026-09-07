@@ -1,0 +1,69 @@
+DATA SCIENCE TECHNICAL INTERVIEW KNOWLEDGE BASE
+================================================
+
+Statistics and Probability:
+Mean, Median, Mode: measures of central tendency. Median is robust to outliers.
+Variance and Standard Deviation: spread of data. Var = E[(X - mu)^2].
+Normal Distribution: bell curve, 68-95-99.7 rule. Many ML algorithms assume normality.
+Central Limit Theorem: sample means approach normal distribution as n increases.
+p-value: probability of observing results given null hypothesis is true. p < 0.05 is common significance threshold.
+Type I Error (False Positive) vs Type II Error (False Negative). Precision-recall tradeoff.
+Confidence Intervals: range within which the true parameter lies with specified probability.
+
+Machine Learning Fundamentals:
+Supervised Learning: labeled data. Classification (discrete output) and Regression (continuous output).
+Unsupervised Learning: unlabeled data. Clustering (K-Means, DBSCAN), Dimensionality Reduction (PCA, t-SNE).
+Semi-supervised and Self-supervised Learning: leverage unlabeled data.
+Overfitting: model fits training data too well, poor generalization. Fix: regularization, dropout, more data, cross-validation.
+Underfitting: model too simple. Fix: more features, more complex model, reduce regularization.
+Bias-Variance Tradeoff: high bias = underfitting, high variance = overfitting. Goal: balance both.
+Cross-Validation: k-fold, stratified k-fold. Prevents data leakage.
+
+Model Evaluation Metrics:
+Classification: Accuracy, Precision, Recall, F1 Score, ROC-AUC, confusion matrix.
+Regression: MAE, MSE, RMSE, R-squared.
+F1 Score: harmonic mean of precision and recall. Use when class imbalance exists.
+ROC-AUC: measures separability between classes. 0.5 = random, 1.0 = perfect.
+
+Feature Engineering:
+Handling missing values: mean/median imputation, KNN imputation, model-based, or drop.
+Encoding categoricals: label encoding, one-hot encoding, target encoding.
+Feature scaling: StandardScaler (zero mean, unit variance), MinMaxScaler (0–1 range). Required by SVM, KNN, neural nets.
+Feature selection: correlation analysis, mutual information, recursive feature elimination, LASSO.
+
+Algorithms:
+Linear Regression: fits hyperplane. Assumptions: linearity, independence, homoscedasticity, normality of residuals.
+Logistic Regression: sigmoid function for binary classification. Log-odds output.
+Decision Trees: splits on information gain or Gini impurity. Prone to overfitting.
+Random Forest: ensemble of trees, reduces overfitting via bagging. Feature importance available.
+Gradient Boosting (XGBoost, LightGBM): sequential trees that correct previous errors. High performance on tabular data.
+Support Vector Machines: maximizes margin between classes. Kernel trick for non-linear boundaries.
+K-Nearest Neighbors: instance-based, lazy learning. Sensitive to feature scale and dimensionality.
+Neural Networks: layers of neurons. Backpropagation with gradient descent. Requires large data.
+
+Deep Learning:
+Convolutional Neural Networks (CNN): for image data. Convolution, pooling, fully-connected layers.
+Recurrent Neural Networks (RNN): for sequential data. Vanishing gradient problem.
+LSTM / GRU: gating mechanisms to handle long-range dependencies.
+Transformers: attention mechanism, parallelizable. Foundation of modern NLP (BERT, GPT).
+Transfer Learning: use pretrained models, fine-tune on domain-specific data.
+
+Natural Language Processing:
+Tokenization: splitting text into tokens (words, subwords, characters).
+Embeddings: Word2Vec, GloVe, contextual embeddings (BERT). Dense vector representations of words.
+Attention Mechanism: queries, keys, values. Allows model to focus on relevant parts of input.
+BERT: bidirectional encoder. Good for classification, NER, QA. Fine-tuning on downstream tasks.
+GPT: autoregressive decoder. Good for generation. Prompt engineering critical.
+RAG (Retrieval Augmented Generation): retrieves relevant documents from a knowledge base, augments prompt. Reduces hallucination.
+
+Evaluation Criteria for Data Science Answers:
+- Statistical correctness
+- Understanding of ML lifecycle (data → features → model → evaluation → deployment)
+- Practical awareness of real-world issues (imbalance, leakage, scalability)
+- Ability to justify model choices
+
+Score 9-10: Deep theoretical understanding, practical experience, handles edge cases, can compare methods
+Score 7-8: Solid understanding, good practical knowledge, minor gaps
+Score 5-6: Basic understanding, some gaps in depth or practical knowledge
+Score 3-4: Surface level, misses key concepts or confuses terms
+Score 1-2: Incorrect fundamentals or unable to answer

@@ -1,0 +1,73 @@
+SYSTEM DESIGN INTERVIEW KNOWLEDGE BASE
+=======================================
+
+Core Concepts:
+Scalability: ability to handle growing load. Horizontal scaling (add more servers) vs vertical scaling (bigger server).
+Availability: percentage of time system is operational. 99.9% = 8.7 hours downtime/year. 99.99% = 52 minutes/year.
+Reliability: probability that system performs correctly over time.
+Consistency: all nodes see same data at same time.
+CAP Theorem: Consistency, Availability, Partition Tolerance — choose at most two.
+Latency vs Throughput: latency is time for one request. Throughput is requests per second.
+
+Load Balancing:
+Distributes incoming requests across multiple servers.
+Algorithms: round-robin, least connections, IP hash, weighted.
+Health checks: load balancer removes unhealthy nodes from rotation.
+Layer 4 (transport) vs Layer 7 (application) load balancing.
+
+Caching:
+Reduces database load, improves latency.
+Cache-aside: application manages cache. Cache-through: writes go through cache.
+Eviction policies: LRU (Least Recently Used), LFU (Least Frequently Used), TTL.
+Redis vs Memcached: Redis supports richer data structures and persistence.
+Cache invalidation: hard problem. Strategies: TTL, event-driven invalidation, write-through.
+
+Databases:
+SQL (RDBMS): structured, ACID transactions, strong consistency. PostgreSQL, MySQL.
+NoSQL: flexible schema. Document (MongoDB), Key-Value (Redis, DynamoDB), Column (Cassandra), Graph (Neo4j).
+Sharding: horizontal partitioning of data across multiple database instances. Shard key selection is critical.
+Replication: master-slave (read replicas), master-master. Improves read throughput and availability.
+ACID: Atomicity, Consistency, Isolation, Durability.
+BASE: Basically Available, Soft state, Eventually consistent. NoSQL often follows BASE.
+
+Message Queues:
+Decouple producers from consumers. Handle spikes in load.
+Kafka: high throughput, persistent, replay-able. For event streaming.
+RabbitMQ: complex routing, lower throughput than Kafka. For task queues.
+Dead letter queues: handle failed messages.
+
+API Gateway:
+Single entry point for clients. Handles routing, auth, rate limiting, SSL termination.
+Rate limiting: prevent abuse. Token bucket and leaky bucket algorithms.
+Circuit breaker: prevents cascading failures by short-circuiting calls to failing services.
+
+Content Delivery Networks (CDN):
+Cache static assets at edge locations close to users.
+Reduces latency for geographically distributed users.
+CloudFront, Akamai, Fastly.
+
+Common System Design Questions:
+Design URL Shortener: hash function (MD5/SHA256 + base62), database (id, short, long, created_at), redirect (301 vs 302).
+Design Twitter/Feed: fan-out on write vs fan-out on read, timeline denormalization, celebrity problem.
+Design Distributed Cache: consistent hashing for partitioning, replication for availability.
+Design Rate Limiter: token bucket, sliding window, Redis counters, distributed coordination.
+Design Search Autocomplete: Trie data structure, top-K most searched, caching.
+Design File Storage (S3): chunking files, metadata service, blob storage, CDN for delivery.
+
+Estimation and Back-of-Envelope Calculations:
+Storage: 1 byte = 8 bits, 1 KB = 1024 bytes, 1 MB = 10^6 bytes, 1 GB = 10^9 bytes, 1 TB = 10^12 bytes.
+Latency: L1 cache ~1ns, RAM ~100ns, SSD ~100μs, network same DC ~500μs, network cross-region ~150ms.
+Throughput: single server ~10K-100K requests/sec depending on workload.
+
+Evaluation Criteria for System Design Answers:
+- Clarity of problem scoping and requirements clarification
+- Appropriate choice of components (DB, cache, queue, CDN)
+- Trade-off awareness (SQL vs NoSQL, consistency vs availability)
+- Scalability and fault tolerance
+- Estimation ability
+
+Score 9-10: Clear scoping, appropriate components, explains trade-offs, handles scale, estimates well
+Score 7-8: Good design, some trade-offs explained, minor gaps in scale considerations
+Score 5-6: Reasonable components, limited trade-off discussion, basic scalability
+Score 3-4: Vague design, missing key components, no trade-off awareness
+Score 1-2: No coherent design or unable to approach the problem

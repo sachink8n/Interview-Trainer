@@ -1,0 +1,58 @@
+BEHAVIORAL INTERVIEW KNOWLEDGE BASE
+=====================================
+
+STAR Method (Situation, Task, Action, Result)
+The STAR method is the gold standard for answering behavioral questions. Always structure behavioral answers with a clear Situation, Task, Action, and Result. Each component should be specific and concise.
+
+Common Behavioral Question Categories:
+1. Leadership and Influence
+2. Conflict Resolution
+3. Teamwork and Collaboration
+4. Problem Solving under Pressure
+5. Failure and Learning
+6. Time Management and Prioritization
+7. Communication and Stakeholder Management
+
+Leadership Questions:
+- Tell me about a time you led a team through a difficult project.
+- Describe a situation where you had to influence without authority.
+- Give an example of when you set a vision and motivated others.
+Strong answers demonstrate initiative, clear communication, empathy, and measurable outcomes.
+
+Conflict Resolution:
+- Describe a time you disagreed with a teammate or manager.
+- How did you handle a situation where two team members were in conflict?
+Best answers show active listening, empathy, finding common ground, and preserving relationships while maintaining productivity.
+
+Handling Failure:
+- Tell me about a project that failed and what you learned.
+- Describe a time you made a mistake at work.
+Strong answers show accountability, reflection, root cause analysis, and concrete steps taken to prevent recurrence.
+
+Teamwork:
+- Describe your experience working in cross-functional teams.
+- How do you handle a team member who is not contributing?
+Best answers show collaboration, clear communication, willingness to help, and team-oriented mindset.
+
+Time Management:
+- How do you prioritize tasks when everything is urgent?
+- Describe a time you managed multiple deadlines simultaneously.
+Strong answers demonstrate structured prioritization (e.g., Eisenhower matrix), delegation skills, and tool use (e.g., Jira, Trello).
+
+Adaptability:
+- Tell me about a time you had to adapt to major change at work.
+- Describe a situation where requirements changed midway through a project.
+Best answers show flexibility, positive attitude toward change, quick learning, and continued delivery under uncertainty.
+
+Evaluation Criteria for Behavioral Answers:
+- Specificity (real example vs vague generality)
+- Clarity of impact and result
+- Self-awareness and ownership
+- Communication clarity
+- Alignment with company values
+
+Score 9-10: Specific, structured STAR, quantified impact, deep self-reflection
+Score 7-8: Clear STAR, good impact, minor gaps in reflection
+Score 5-6: Partial STAR, some specifics, limited impact or reflection
+Score 3-4: Vague answer, missing key components, minimal structure
+Score 1-2: No real example, evasive or unrelated answer
