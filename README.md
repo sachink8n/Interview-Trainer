@@ -1,7 +1,7 @@
 # AI-Powered Interview Trainer Agent
 
 **Problem Statement No. 22 – Interview Trainer Agent**
-**Candidate:** Sachin Kumar
+
 
 ## 📌 Project Overview
 The **Interview Trainer Agent** is a multi-agent, AI-powered system designed to prepare users for job interviews by generating tailored question sets and preparation strategies. By leveraging **Retrieval-Augmented Generation (RAG)** and **IBM Granite**, the system assesses both technical proficiency and soft skills to build candidate confidence and identify skill gaps in real-time.
