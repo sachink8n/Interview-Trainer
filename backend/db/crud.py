@@ -7,16 +7,30 @@ from db.database import get_connection
 
 # ── Sessions ──────────────────────────────────────────────────────────────────
 
-def insert_session(session_id: str, job_role: str, skills: list[str], resume_text: str) -> None:
+def insert_session(
+    session_id: str,
+    job_role: str,
+    skills: list[str],
+    resume_text: str,
+    job_description: str = "",
+    skill_gap_summary: str = "",
+    targeted_questions: list[str] | None = None,
+) -> None:
     with get_connection() as conn:
         conn.execute(
-            "INSERT INTO sessions (id, created_at, job_role, skills, resume_text) VALUES (?,?,?,?,?)",
+                """INSERT INTO sessions
+                    (id, created_at, job_role, skills, resume_text, job_description,
+                     skill_gap_summary, targeted_questions)
+                    VALUES (?,?,?,?,?,?,?,?)""",
             (
                 session_id,
                 datetime.now(timezone.utc).isoformat(),
                 job_role,
                 json.dumps(skills),
                 resume_text,
+                job_description,
+                skill_gap_summary,
+                json.dumps(targeted_questions or []),
             ),
         )
 
@@ -28,12 +42,18 @@ def get_session(session_id: str) -> dict[str, Any] | None:
         return None
     d = dict(row)
     d["skills"] = json.loads(d["skills"])
+    d["targeted_questions"] = json.loads(d.get("targeted_questions") or "[]")
     return d
 
 
 def update_session_role(session_id: str, job_role: str) -> None:
     with get_connection() as conn:
         conn.execute("UPDATE sessions SET job_role = ? WHERE id = ?", (job_role, session_id))
+
+
+def update_session_difficulty(session_id: str, difficulty: str) -> None:
+    with get_connection() as conn:
+        conn.execute("UPDATE sessions SET current_difficulty = ? WHERE id = ?", (difficulty, session_id))
 
 
 # ── Turns ─────────────────────────────────────────────────────────────────────
@@ -55,13 +75,14 @@ def update_turn_answer(
     weaknesses: str,
     feedback: str,
     follow_up: str,
+    ideal_model_answer: str = "",
 ) -> None:
     with get_connection() as conn:
         conn.execute(
             """UPDATE turns
-               SET answer=?, score=?, strengths=?, weaknesses=?, feedback=?, follow_up=?
+                    SET answer=?, score=?, strengths=?, weaknesses=?, feedback=?, follow_up=?, ideal_model_answer=?
                WHERE id=?""",
-            (answer, score, strengths, weaknesses, feedback, follow_up, turn_id),
+                (answer, score, strengths, weaknesses, feedback, follow_up, ideal_model_answer, turn_id),
         )
 
 

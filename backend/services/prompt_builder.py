@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import random
 from config import MAX_PREVIOUS_QUESTIONS
+from services.interview_state import InterviewSessionState
 
 # ── Question-type catalogue ───────────────────────────────────────────────────
 
@@ -119,9 +120,26 @@ _QUESTION_TYPES = [
 
 
 def _pick_question_type(turn_num: int) -> tuple[str, str]:
-    """Return (category_label, instruction) for the given turn number."""
-    idx = (turn_num - 1) % len(_QUESTION_TYPES)
-    return _QUESTION_TYPES[idx]
+    """Return the deterministic phase/category for the requested turn."""
+    if turn_num <= 2:
+        return (
+            "Phase 1 - Introduction",
+            "Ask about the candidate's background, resume, motivation, or experience. Keep it open-ended and welcoming.",
+        )
+    if turn_num <= 6:
+        return (
+            "Phase 2 - Technical",
+            "Ask one role-specific technical question involving problem solving, fundamentals, implementation, or system design. Make it medium difficulty.",
+        )
+    return (
+        "Phase 3 - HR/Behavioral",
+        "Ask one behavioral question about leadership, conflict, failure, ambiguity, feedback, or teamwork. Invite a concrete real experience so it can be answered using STAR.",
+    )
+
+
+def get_question_category(turn_num: int) -> str:
+    """Return the category used to evaluate a generated question."""
+    return InterviewSessionState(turn_num).category_label
 
 
 def build_question_prompt(
@@ -130,6 +148,7 @@ def build_question_prompt(
     rag_chunks: list[str],
     previous_questions: list[str],
     turn_num: int,
+    job_description: str = "",
 ) -> str:
     skills_str = ", ".join(skills) if skills else "general software engineering"
     context_str = "\n\n".join(rag_chunks) if rag_chunks else ""
@@ -150,6 +169,8 @@ def build_question_prompt(
     prompt = f"""You are a senior technical interviewer conducting a real {job_role} interview.
 
 Candidate's Skills: {skills_str}
+Job Description:
+{job_description[:6000] if job_description else "Not provided."}
 {context_block}
 Previously Asked Questions (do NOT repeat or closely paraphrase any of these):
 {prev_str}
@@ -175,8 +196,20 @@ def build_evaluation_prompt(
     skills: list[str],
     question: str,
     answer: str,
+    category: str = "",
 ) -> str:
     skills_str = ", ".join(skills) if skills else "general skills"
+
+    is_hr = category.startswith("Phase 3")
+    star_instruction = """
+For this HR/Behavioral answer, strictly evaluate the STAR method:
+- Situation: Did the candidate clearly set the context?
+- Task: Did they explain their responsibility or goal?
+- Action: Did they describe specific actions they personally took?
+- Result: Did they give a concrete outcome, impact, or learning?
+The score must reflect missing STAR components. Mention exactly which components are missing in feedback.
+""" if is_hr else ""
+    model_answer_field = '  "ideal_model_answer": "<a concise ideal STAR answer covering Situation, Task, Action, and Result>"' if is_hr else '  "ideal_model_answer": ""'
 
     prompt = f"""You are a strict but fair technical interviewer evaluating a candidate's answer for a {job_role} role.
 
@@ -192,6 +225,7 @@ Evaluate the answer across these five dimensions:
 3. Technical Depth — Does it show understanding beyond surface level?
 4. Clarity — Is the explanation clear and well-structured?
 5. Completeness — Does it cover all key aspects?
+{star_instruction}
 
 Respond ONLY with valid JSON in exactly this format (no markdown, no extra text):
 {{
@@ -199,7 +233,8 @@ Respond ONLY with valid JSON in exactly this format (no markdown, no extra text)
   "strengths": ["<strength 1>", "<strength 2>"],
   "weaknesses": ["<weakness or gap 1>", "<weakness or gap 2>"],
   "feedback": "<2-3 sentences of specific, constructive feedback referencing the question>",
-  "follow_up_question": "<one focused follow-up question that either digs deeper into a gap or advances the topic>"
+    "follow_up_question": "<one focused follow-up question that either digs deeper into a gap or advances the topic>",
+{model_answer_field}
 }}
 
 Scoring guide:
@@ -215,3 +250,34 @@ Both "strengths" and "weaknesses" must be plain string arrays — no nested obje
 JSON:"""
 
     return prompt
+
+
+def build_adaptive_question_prompt(
+    current_difficulty: str,
+    previous_question: str,
+    user_answer: str,
+    previous_score: int | None,
+    role_context: str = "",
+) -> str:
+    """Build a JSON-only prompt for the next adaptive interview question."""
+    score = "Not available (this is the first question)." if previous_score is None else str(previous_score)
+    return f"""You are generating the next question in an interview for {role_context or 'a software engineering role'}.
+
+Current difficulty: {current_difficulty.title()}
+Previous question: {previous_question or "None - start the interview."}
+User answer: {user_answer or "None - start the interview."}
+Previous score: {score}
+
+Difficulty rules:
+- If previous_score is 8 or higher, increase the next question's difficulty by one level.
+- If previous_score is 4 or lower, generate a foundational/easier question and decrease the level by one when possible.
+- If previous_score is 5, 6, or 7, keep the current difficulty.
+- Difficulty must remain one of Easy, Medium, or Hard.
+- On the first question, keep the current difficulty and ask a clear introductory question.
+- Do not repeat or closely paraphrase the previous question.
+
+Return ONLY valid JSON with exactly this shape:
+{{
+  "question": "One focused interview question?",
+  "updated_difficulty": "Easy|Medium|Hard"
+}}"""

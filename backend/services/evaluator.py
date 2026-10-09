@@ -19,6 +19,7 @@ class EvaluationResult:
     weaknesses: str     # same format; empty string if none
     feedback: str
     follow_up_question: str
+    ideal_model_answer: str
 
 
 def _to_bullets(value: object) -> str:
@@ -86,6 +87,7 @@ def parse_evaluation(raw: str) -> EvaluationResult:
                 weaknesses=weaknesses,
                 feedback=str(data.get("feedback", "")).strip(),
                 follow_up_question=str(data.get("follow_up_question", "")).strip(),
+                ideal_model_answer=str(data.get("ideal_model_answer", "")).strip(),
             )
         except (json.JSONDecodeError, ValueError, TypeError):
             pass
@@ -97,4 +99,5 @@ def parse_evaluation(raw: str) -> EvaluationResult:
         weaknesses="",
         feedback=raw[:600].strip() if raw else "No feedback available.",
         follow_up_question="Can you elaborate further on your answer?",
+        ideal_model_answer="",
     )

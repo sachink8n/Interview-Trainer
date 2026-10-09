@@ -75,14 +75,32 @@ def build_index() -> None:
     _index.add(vectors)               # type: ignore[arg-type]
 
 
-def retrieve(query: str, top_k: int = 3) -> list[str]:
-    """Return top-k chunk texts most relevant to *query*."""
-    if _index is None or not _chunks:
+def retrieve(query: str, top_k: int = 3, extra_texts: list[tuple[str, str]] | None = None) -> list[str]:
+    """Return relevant knowledge-base chunks plus optional session documents."""
+    if (_index is None or not _chunks) and not extra_texts:
         return []
 
     embedder = _get_embedder()
     q_vec = embedder.encode([query], convert_to_numpy=True, normalize_embeddings=True)
     q_vec = q_vec.astype(np.float32)
 
-    _, indices = _index.search(q_vec, top_k)  # type: ignore[attr-defined]
-    return [_chunks[i].text for i in indices[0] if i < len(_chunks)]
+    candidates = list(_chunks)
+    if extra_texts:
+        for text, source in extra_texts:
+            candidates.extend(_word_chunks(text, source))
+
+    if _index is not None and len(candidates) == len(_chunks):
+        _, indices = _index.search(q_vec, top_k)  # type: ignore[attr-defined]
+        return [_chunks[i].text for i in indices[0] if i < len(_chunks)]
+
+    import faiss
+
+    vectors = embedder.encode(
+        [chunk.text for chunk in candidates],
+        convert_to_numpy=True,
+        normalize_embeddings=True,
+    ).astype(np.float32)
+    index = faiss.IndexFlatIP(vectors.shape[1])
+    index.add(vectors)
+    _, indices = index.search(q_vec, min(top_k, len(candidates)))
+    return [candidates[i].text for i in indices[0] if i < len(candidates)]

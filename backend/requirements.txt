@@ -5,5 +5,8 @@ pymupdf
 sentence-transformers
 faiss-cpu
 ibm-watsonx-ai
+ibm-watson
 python-dotenv
 numpy
+opencv-python-headless
+mediapipe

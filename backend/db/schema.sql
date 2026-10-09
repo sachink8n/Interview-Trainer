@@ -3,7 +3,11 @@ CREATE TABLE IF NOT EXISTS sessions (
     created_at  TEXT NOT NULL,
     job_role    TEXT NOT NULL,
     skills      TEXT NOT NULL,   -- JSON array
-    resume_text TEXT NOT NULL
+    resume_text TEXT NOT NULL,
+    job_description TEXT NOT NULL DEFAULT '',
+    skill_gap_summary TEXT NOT NULL DEFAULT '',
+    targeted_questions TEXT NOT NULL DEFAULT '[]',
+    current_difficulty TEXT NOT NULL DEFAULT 'medium'
 );
 
 CREATE TABLE IF NOT EXISTS turns (
@@ -16,5 +20,6 @@ CREATE TABLE IF NOT EXISTS turns (
     strengths   TEXT,
     weaknesses  TEXT,
     feedback    TEXT,
-    follow_up   TEXT
+    follow_up   TEXT,
+    ideal_model_answer TEXT
 );

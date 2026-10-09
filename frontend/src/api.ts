@@ -15,6 +15,8 @@ export interface SessionStartResponse {
   session_id: string;
   job_role: string;
   skills: string[];
+  skill_gap_summary: string;
+  targeted_questions: string[];
 }
 
 export interface SessionDetail {
@@ -23,6 +25,9 @@ export interface SessionDetail {
   skills: string[];
   created_at: string;
   turns: Turn[];
+  job_description: string;
+  skill_gap_summary: string;
+  targeted_questions: string[];
 }
 
 export interface Turn {
@@ -36,12 +41,14 @@ export interface Turn {
   weaknesses: string | null;
   feedback: string | null;
   follow_up: string | null;
+  ideal_model_answer: string | null;
 }
 
 export interface QuestionResponse {
   turn_id: number;
   turn_num: number;
   question: string;
+  updated_difficulty: 'easy' | 'medium' | 'hard';
 }
 
 export interface AnswerResponse {
@@ -51,11 +58,23 @@ export interface AnswerResponse {
   weaknesses: string;
   feedback: string;
   follow_up_question: string;
+  ideal_model_answer: string;
 }
 
 export interface HistoryResponse {
   session_id: string;
   turns: Turn[];
+}
+
+export interface TranscriptionResponse {
+  transcript: string;
+}
+
+export interface FocusFrameResponse {
+  focus_score: number;
+  face_present: boolean;
+  yaw: number | null;
+  pitch: number | null;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -90,10 +109,11 @@ export async function uploadResume(file: File): Promise<ResumeUploadResponse> {
 export async function startSession(
   session_id: string,
   job_role: string,
+  job_description: string,
 ): Promise<SessionStartResponse> {
   return request<SessionStartResponse>('/session/start', {
     method: 'POST',
-    body: JSON.stringify({ session_id, job_role }),
+    body: JSON.stringify({ session_id, job_role, job_description }),
   });
 }
 
@@ -120,6 +140,31 @@ export async function submitAnswer(
     method: 'POST',
     body: JSON.stringify({ session_id, turn_id, answer }),
   });
+}
+
+/** Send a MediaRecorder audio blob to IBM Watson Speech-to-Text. */
+export async function transcribeAudio(audio: Blob): Promise<TranscriptionResponse> {
+  const form = new FormData();
+  form.append('audio', audio, 'answer.webm');
+  const res = await fetch(`${BASE_URL}/interview/transcribe`, { method: 'POST', body: form });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail ?? `Transcription failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+/** Send one ephemeral webcam frame for server-side focus estimation. */
+export async function sendFocusFrame(session_id: string, frame: Blob): Promise<FocusFrameResponse> {
+  const form = new FormData();
+  form.append('session_id', session_id);
+  form.append('frame', frame, 'focus.jpg');
+  const res = await fetch(`${BASE_URL}/interview/focus/frame`, { method: 'POST', body: form });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail ?? `Focus tracking failed: ${res.status}`);
+  }
+  return res.json();
 }
 
 /** Fetch all turns for a session (interview history). */
